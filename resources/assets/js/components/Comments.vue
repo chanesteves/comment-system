@@ -165,8 +165,6 @@
         data() {
             return {
                 comments: [],
-                replies1: [],
-                replies2: [],
                 count: 0,
                 comment_boxes: [],
                 reply_comment_boxes: [],
@@ -190,11 +188,12 @@
             fetchComments() {
                 this.$http.get('comments/' + this.commentUrl).then(res => {
                     this.comments = res.data;
-                    this.sortComments();
-                    this.countComments();
+                    this.sortComments(); // sort the comments/replies by latest upon load
+                    this.countComments(); // count the comments/replies upon load
                 });
             },
             sortComments() {
+                // sort comments/replies by latest
                 this.comments = _.orderBy(this.comments, ['created_at'], ['desc']);
 
                 this.comments.forEach(function(comment) {
@@ -206,6 +205,7 @@
                 });
             },
             countComments() {
+                // count comment.replies and show it
                 this.count = this.comments.length;
 
                 let replies = 0;
@@ -221,10 +221,12 @@
             },
             openComment(index) {
                 if (this.comment_boxes[index]) {
+                    // close comment form
                     Vue.set(this.comment_boxes, index, 0);
 
                     this.has_open = false;
                 } else {
+                    // close other comment forms
                     for (let i = 0; i < this.comment_boxes.length; i++) {
                         if (this.comment_boxes[i])     
                             Vue.set(this.comment_boxes, i, 0);
@@ -234,6 +236,7 @@
                             Vue.set(this.reply_comment_boxes, i, 0);
                     }
 
+                    // open comment form
                     Vue.set(this.comment_boxes, index, 1);
 
                     this.has_open = true;
@@ -241,10 +244,12 @@
             },
             openReply(index) {
                 if (this.reply_comment_boxes[index]) {
+                    // close comment form
                     Vue.set(this.reply_comment_boxes, index, 0);
 
                     this.has_open = false;
                 } else {
+                    // close other comment forms
                     for (let i = 0; i < this.comment_boxes.length; i++) {
                         if (this.comment_boxes[i])     
                             Vue.set(this.comment_boxes, i, 0);
@@ -254,6 +259,7 @@
                             Vue.set(this.reply_comment_boxes, i, 0);
                     }
 
+                    // open comment form
                     Vue.set(this.reply_comment_boxes, index, 1);
 
                     this.has_open = true;
@@ -275,13 +281,15 @@
                                 "id": res.data.comment.id,
                                 "user_name": this.user_name,
                                 "comment": this.message,
-                                "reply": 0,
+                                "reply": 0, // level 1 comments
                                 "replies": [],
                                 "created_at": res.data.comment.created_at,
                                 "date": res.data.comment.date
                             });
-                            this.sortComments();
-                            this.countComments();
+                            this.sortComments(); // sort the comments/replies by latest upon save
+                            this.countComments(); // count the comments/replies upon save
+
+                            // clear inputs
                             this.message = null;
                             this.user_name = null;
                             this.has_open = false;
@@ -289,6 +297,7 @@
                     });
                 }
                 else {
+                    // validation messages
                     if (!this.message || this.message.trim() == '')
                         this.error_comment = "Please enter a comment";
                     if (!this.user_name || this.user_name.trim() == '')
@@ -301,7 +310,7 @@
                 if (this.message != null && this.message.trim() != '' && this.user_name && this.user_name.trim() != '') {
                     this.$http.post('comments', {
                         comment: this.message,
-                        reply: level,
+                        reply: level, // levels 2-3 comments
                         user_name: this.user_name,
                         reply_id: id
                     }).then(res => {
@@ -327,8 +336,10 @@
                                 Vue.set(this.reply_comment_boxes, index2, 0);
                             }
                             Vue.set(this.comment_boxes, index, 0);
-                            this.sortComments();
-                            this.countComments();
+                            this.sortComments(); // sort the comments/replies by latest upon save
+                            this.countComments(); // count the comments/replies upon save
+
+                            // clear inputs
                             this.message = null;
                             this.user_name = null;
                             this.has_open = false;
@@ -336,6 +347,7 @@
                     });
                 }
                 else {
+                    //validation messages
                     if (!this.message || this.message.trim() == '')
                         this.error_reply = "Please enter a reply";
                     if (!this.user_name || this.user_name.trim() == '')

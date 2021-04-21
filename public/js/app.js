@@ -2075,8 +2075,6 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
   data: function data() {
     return {
       comments: [],
-      replies1: [],
-      replies2: [],
       count: 0,
       comment_boxes: [],
       reply_comment_boxes: [],
@@ -2101,12 +2099,15 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
       this.$http.get('comments/' + this.commentUrl).then(function (res) {
         _this.comments = res.data;
 
-        _this.sortComments();
+        _this.sortComments(); // sort the comments/replies by latest upon load
 
-        _this.countComments();
+
+        _this.countComments(); // count the comments/replies upon load
+
       });
     },
     sortComments: function sortComments() {
+      // sort comments/replies by latest
       this.comments = _.orderBy(this.comments, ['created_at'], ['desc']);
       this.comments.forEach(function (comment) {
         comment.replies = _.orderBy(comment.replies, ['created_at'], ['desc']);
@@ -2116,6 +2117,7 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
       });
     },
     countComments: function countComments() {
+      // count comment.replies and show it
       this.count = this.comments.length;
       var replies = 0;
       this.comments.forEach(function (comment) {
@@ -2128,16 +2130,19 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
     },
     openComment: function openComment(index) {
       if (this.comment_boxes[index]) {
+        // close comment form
         Vue.set(this.comment_boxes, index, 0);
         this.has_open = false;
       } else {
+        // close other comment forms
         for (var i = 0; i < this.comment_boxes.length; i++) {
           if (this.comment_boxes[i]) Vue.set(this.comment_boxes, i, 0);
         }
 
         for (var _i = 0; _i < this.reply_comment_boxes.length; _i++) {
           if (this.reply_comment_boxes[_i]) Vue.set(this.reply_comment_boxes, _i, 0);
-        }
+        } // open comment form
+
 
         Vue.set(this.comment_boxes, index, 1);
         this.has_open = true;
@@ -2145,16 +2150,19 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
     },
     openReply: function openReply(index) {
       if (this.reply_comment_boxes[index]) {
+        // close comment form
         Vue.set(this.reply_comment_boxes, index, 0);
         this.has_open = false;
       } else {
+        // close other comment forms
         for (var i = 0; i < this.comment_boxes.length; i++) {
           if (this.comment_boxes[i]) Vue.set(this.comment_boxes, i, 0);
         }
 
         for (var _i2 = 0; _i2 < this.reply_comment_boxes.length; _i2++) {
           if (this.reply_comment_boxes[_i2]) Vue.set(this.reply_comment_boxes, _i2, 0);
-        }
+        } // open comment form
+
 
         Vue.set(this.reply_comment_boxes, index, 1);
         this.has_open = true;
@@ -2179,14 +2187,18 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
               "user_name": _this2.user_name,
               "comment": _this2.message,
               "reply": 0,
+              // level 1 comments
               "replies": [],
               "created_at": res.data.comment.created_at,
               "date": res.data.comment.date
             });
 
-            _this2.sortComments();
+            _this2.sortComments(); // sort the comments/replies by latest upon save
 
-            _this2.countComments();
+
+            _this2.countComments(); // count the comments/replies upon save
+            // clear inputs
+
 
             _this2.message = null;
             _this2.user_name = null;
@@ -2194,6 +2206,7 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
           }
         });
       } else {
+        // validation messages
         if (!this.message || this.message.trim() == '') this.error_comment = "Please enter a comment";
         if (!this.user_name || this.user_name.trim() == '') this.error_commenter = "Please enter your name";
       }
@@ -2208,6 +2221,7 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
         this.$http.post('comments', {
           comment: this.message,
           reply: level,
+          // levels 2-3 comments
           user_name: this.user_name,
           reply_id: id
         }).then(function (res) {
@@ -2236,9 +2250,12 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
             Vue.set(_this3.comment_boxes, index, 0);
 
-            _this3.sortComments();
+            _this3.sortComments(); // sort the comments/replies by latest upon save
 
-            _this3.countComments();
+
+            _this3.countComments(); // count the comments/replies upon save
+            // clear inputs
+
 
             _this3.message = null;
             _this3.user_name = null;
@@ -2246,6 +2263,7 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
           }
         });
       } else {
+        //validation messages
         if (!this.message || this.message.trim() == '') this.error_reply = "Please enter a reply";
         if (!this.user_name || this.user_name.trim() == '') this.error_replier = "Please enter your name";
       }

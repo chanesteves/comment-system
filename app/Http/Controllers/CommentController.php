@@ -17,6 +17,7 @@ class CommentController extends Controller
         $comments = Comment::where('page_id', $page_id)->get();
 		$comments_data = [];
 		foreach ($comments as $comment) {
+            // get the comment (layer 2) replies
             $replies = $this->replies($comment->id);
                    
 		   	array_push($comments_data,[
@@ -26,23 +27,13 @@ class CommentController extends Controller
                 "reply"         => $comment->reply,
                 "replies"       => $replies,
                 "created_at"    => $comment->created_at,
-                "date"          => $comment->created_at->diffForHumans()
+                "date"          => $comment->created_at->diffForHumans() // e.g. 1 second ago
             ]);
         }
            
         $comms = collect($comments_data);
            
 	   	return $comms->sortByDesc('created_at');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -64,7 +55,7 @@ class CommentController extends Controller
         $comment = Comment::create($request->all());
 
         $comment->user_name = $comment->user_name;
-        $comment->date = $comment->created_at->diffForHumans();
+        $comment->date = $comment->created_at->diffForHumans(); // e.g. 1 second ago
 
         if($comment)
             return [ 
@@ -74,64 +65,26 @@ class CommentController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * List the replies to a comment.
      *
-     * @param  \App\Comment  $comment
-     * @return \Illuminate\Http\Response
+     * @param  integer $id
+     * @return collect
      */
-    public function show(Comment $comment)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Comment  $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Comment $comment)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Comment  $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Comment $comment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Comment  $comment
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Comment $comment)
-    {
-        //
-    }
-
-    public function replies ($id) {
+    private function replies ($id) {
         $comments = Comment::where('reply_id', $id)->get();
        	$comments_data = [];
        	foreach ($comments as $comment) {
+            // get the comment (layer 3) replies
             $replies = $this->replies($comment->id);
 
             array_push($comments_data,[
                 "user_name"     => $comment->user_name,
                 "id"            => $comment->id,
                 "comment"       => $comment->comment,
-                "reply"         => $comment->reply,
+                "reply"         => $comment->reply, // level indicator of the reply
                 "replies"       => $replies,
                 "created_at"    => $comment->created_at,
-                "date"          => $comment->created_at->diffForHumans()
+                "date"          => $comment->created_at->diffForHumans() // e.g. 1 second ago
             ]);
         }
 
