@@ -10,7 +10,7 @@
 
             <form class="form" name="form" @submit.prevent="saveComment">
                 <div class="form-row">
-                    <textarea class="input" placeholder="Add a comment..." required v-model="message"></textarea>
+                    <textarea ref="txt_comment" class="input" placeholder="Add a comment..." required v-model="message"></textarea>
                 </div>
                 <div class="form-row">
                     <span v-if="error_comment" style="color: red;">{{ error_comment }}</span>
@@ -59,17 +59,17 @@
                     </div>
                     <form class="form" name="form" v-on:submit.prevent="saveReply(comment.id, index, 0, 1)">
                         <div class="form-row">
-                            <textarea class="input" placeholder="Add a comment..." required v-model="message"></textarea>
+                            <textarea :ref="'txt_comment' + index" class="input" placeholder="Add a comment..." required v-model="message"></textarea>
                         </div>
                         <div class="form-row">
-                            <span class="input" v-if="error_reply" style="color: red;">{{ error_reply }}</span>
+                            <span v-if="error_reply" style="color: red;">{{ error_reply }}</span>
                         </div>
                         <div class="form-row">
                             <input type="button" class="btn btn-primary" v-on:click="saveReply(comment.id, index, 0, 1)" value="Post as">
                             <input class="input" placeholder="Your name" type="text" v-model="user_name">
                         </div>
                         <div class="form-row">
-                            <span class="input" v-if="error_replier" style="color: red;">{{ error_replier }}</span>
+                            <span v-if="error_replier" style="color: red;">{{ error_replier }}</span>
                         </div>
                     </form>
                 </div>
@@ -108,17 +108,17 @@
                                 </div>
                                 <form class="form" name="form" v-on:submit.prevent="saveReply(reply.id, index, index2, 2)">
                                     <div class="form-row">
-                                        <textarea class="input" placeholder="Add a comment..." required v-model="message"></textarea>
+                                        <textarea :ref="'txt_reply' + index2" class="input" placeholder="Add a comment..." required v-model="message"></textarea>
                                     </div>
                                     <div class="form-row">
-                                        <span class="input" v-if="error_reply" style="color: red;">{{ error_reply }}</span>
+                                        <span v-if="error_reply" style="color: red;">{{ error_reply }}</span>
                                     </div>
                                     <div class="form-row">
                                         <input type="button" class="btn btn-primary" v-on:click="saveReply(reply.id, index, index2, 2)" value="Post as">
                                         <input class="input" placeholder="Your name" type="text" v-model="user_name">
                                     </div>
                                     <div class="form-row">
-                                        <span class="input" v-if="error_replier" style="color: red;">{{ error_replier }}</span>
+                                        <span v-if="error_replier" style="color: red;">{{ error_replier }}</span>
                                     </div>
                                 </form>
                             </div>
@@ -220,9 +220,20 @@
                 this.count += replies;
             },
             openComment(index) {
+                // clear inputs
+                this.message = null;
+                this.user_name = null;
+                this.error_comment = null;
+                this.error_commenter = null;
+
                 if (this.comment_boxes[index]) {
                     // close comment form
                     Vue.set(this.comment_boxes, index, 0);
+
+                    // auto-focus to main comment
+                    this.$nextTick(() => {
+                        this.$refs.txt_comment.focus();
+                    });
 
                     this.has_open = false;
                 } else {
@@ -239,13 +250,29 @@
                     // open comment form
                     Vue.set(this.comment_boxes, index, 1);
 
+                    // auto-focus to input
+                    this.$nextTick(() => {
+                        this.$refs['txt_comment' + index][0].focus();
+                    });
+
                     this.has_open = true;
                 }
             },
             openReply(index) {
+                // clear inputs
+                this.message = null;
+                this.user_name = null;
+                this.error_reply = null;
+                this.error_replier = null;
+
                 if (this.reply_comment_boxes[index]) {
                     // close comment form
                     Vue.set(this.reply_comment_boxes, index, 0);
+
+                    // auto-focus to main comment
+                    this.$nextTick(() => {
+                        this.$refs.txt_comment.focus();
+                    });
 
                     this.has_open = false;
                 } else {
@@ -261,6 +288,11 @@
 
                     // open comment form
                     Vue.set(this.reply_comment_boxes, index, 1);
+
+                    // auto-focus to input
+                    this.$nextTick(() => {
+                        this.$refs['txt_reply' + index][0].focus();
+                    });
 
                     this.has_open = true;
                 }
@@ -286,6 +318,11 @@
                                 "created_at": res.data.comment.created_at,
                                 "date": res.data.comment.date
                             });
+                            // auto-focus to main comment
+                            this.$nextTick(() => {
+                                this.$refs.txt_comment.focus();
+                            });
+                            
                             this.sortComments(); // sort the comments/replies by latest upon save
                             this.countComments(); // count the comments/replies upon save
 
@@ -336,6 +373,12 @@
                                 Vue.set(this.reply_comment_boxes, index2, 0);
                             }
                             Vue.set(this.comment_boxes, index, 0);
+
+                            // auto-focus to main comment
+                            this.$nextTick(() => {
+                                this.$refs.txt_comment.focus();
+                            });
+                            
                             this.sortComments(); // sort the comments/replies by latest upon save
                             this.countComments(); // count the comments/replies upon save
 
@@ -358,6 +401,8 @@
         mounted() {
             console.log("mounted");
             this.fetchComments();
+
+            this.$refs.txt_comment.focus();
         }
     }
 </script>

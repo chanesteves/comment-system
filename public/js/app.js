@@ -2129,9 +2129,21 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
       this.count += replies;
     },
     openComment: function openComment(index) {
+      var _this2 = this;
+
+      // clear inputs
+      this.message = null;
+      this.user_name = null;
+      this.error_comment = null;
+      this.error_commenter = null;
+
       if (this.comment_boxes[index]) {
         // close comment form
-        Vue.set(this.comment_boxes, index, 0);
+        Vue.set(this.comment_boxes, index, 0); // auto-focus to main comment
+
+        this.$nextTick(function () {
+          _this2.$refs.txt_comment.focus();
+        });
         this.has_open = false;
       } else {
         // close other comment forms
@@ -2144,14 +2156,30 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
         } // open comment form
 
 
-        Vue.set(this.comment_boxes, index, 1);
+        Vue.set(this.comment_boxes, index, 1); // auto-focus to input
+
+        this.$nextTick(function () {
+          _this2.$refs['txt_comment' + index][0].focus();
+        });
         this.has_open = true;
       }
     },
     openReply: function openReply(index) {
+      var _this3 = this;
+
+      // clear inputs
+      this.message = null;
+      this.user_name = null;
+      this.error_reply = null;
+      this.error_replier = null;
+
       if (this.reply_comment_boxes[index]) {
         // close comment form
-        Vue.set(this.reply_comment_boxes, index, 0);
+        Vue.set(this.reply_comment_boxes, index, 0); // auto-focus to main comment
+
+        this.$nextTick(function () {
+          _this3.$refs.txt_comment.focus();
+        });
         this.has_open = false;
       } else {
         // close other comment forms
@@ -2164,12 +2192,16 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
         } // open comment form
 
 
-        Vue.set(this.reply_comment_boxes, index, 1);
+        Vue.set(this.reply_comment_boxes, index, 1); // auto-focus to input
+
+        this.$nextTick(function () {
+          _this3.$refs['txt_reply' + index][0].focus();
+        });
         this.has_open = true;
       }
     },
     saveComment: function saveComment() {
-      var _this2 = this;
+      var _this4 = this;
 
       this.error_comment = null;
       this.error_commenter = null;
@@ -2182,27 +2214,32 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
           user_name: this.user_name
         }).then(function (res) {
           if (res.data.status) {
-            _this2.comments.push({
+            _this4.comments.push({
               "id": res.data.comment.id,
-              "user_name": _this2.user_name,
-              "comment": _this2.message,
+              "user_name": _this4.user_name,
+              "comment": _this4.message,
               "reply": 0,
               // level 1 comments
               "replies": [],
               "created_at": res.data.comment.created_at,
               "date": res.data.comment.date
+            }); // auto-focus to main comment
+
+
+            _this4.$nextTick(function () {
+              _this4.$refs.txt_comment.focus();
             });
 
-            _this2.sortComments(); // sort the comments/replies by latest upon save
+            _this4.sortComments(); // sort the comments/replies by latest upon save
 
 
-            _this2.countComments(); // count the comments/replies upon save
+            _this4.countComments(); // count the comments/replies upon save
             // clear inputs
 
 
-            _this2.message = null;
-            _this2.user_name = null;
-            _this2.has_open = false;
+            _this4.message = null;
+            _this4.user_name = null;
+            _this4.has_open = false;
           }
         });
       } else {
@@ -2212,7 +2249,7 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
       }
     },
     saveReply: function saveReply(id, index, index2, level) {
-      var _this3 = this;
+      var _this5 = this;
 
       this.error_reply = null;
       this.error_replier = null;
@@ -2226,40 +2263,44 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
           reply_id: id
         }).then(function (res) {
           if (res.data.status) {
-            if (level == 1 && typeof _this3.comments[index] !== 'undefined') {
-              _this3.comments[index].replies.push({
+            if (level == 1 && typeof _this5.comments[index] !== 'undefined') {
+              _this5.comments[index].replies.push({
                 "id": res.data.comment.id,
-                "user_name": _this3.user_name,
-                "comment": _this3.message,
+                "user_name": _this5.user_name,
+                "comment": _this5.message,
                 "created_at": res.data.comment.created_at,
                 "date": res.data.comment.date
               });
 
-              Vue.set(_this3.reply_comment_boxes, index, 0);
-            } else if (level == 2 && typeof _this3.comments[index] !== 'undefined' && typeof _this3.comments[index].replies[index2] !== 'undefined') {
-              _this3.comments[index].replies[index2].replies.push({
+              Vue.set(_this5.reply_comment_boxes, index, 0);
+            } else if (level == 2 && typeof _this5.comments[index] !== 'undefined' && typeof _this5.comments[index].replies[index2] !== 'undefined') {
+              _this5.comments[index].replies[index2].replies.push({
                 "id": res.data.comment.id,
-                "user_name": _this3.user_name,
-                "comment": _this3.message,
+                "user_name": _this5.user_name,
+                "comment": _this5.message,
                 "created_at": res.data.comment.created_at,
                 "date": res.data.comment.date
               });
 
-              Vue.set(_this3.reply_comment_boxes, index2, 0);
+              Vue.set(_this5.reply_comment_boxes, index2, 0);
             }
 
-            Vue.set(_this3.comment_boxes, index, 0);
+            Vue.set(_this5.comment_boxes, index, 0); // auto-focus to main comment
 
-            _this3.sortComments(); // sort the comments/replies by latest upon save
+            _this5.$nextTick(function () {
+              _this5.$refs.txt_comment.focus();
+            });
+
+            _this5.sortComments(); // sort the comments/replies by latest upon save
 
 
-            _this3.countComments(); // count the comments/replies upon save
+            _this5.countComments(); // count the comments/replies upon save
             // clear inputs
 
 
-            _this3.message = null;
-            _this3.user_name = null;
-            _this3.has_open = false;
+            _this5.message = null;
+            _this5.user_name = null;
+            _this5.has_open = false;
           }
         });
       } else {
@@ -2272,6 +2313,7 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
   mounted: function mounted() {
     console.log("mounted");
     this.fetchComments();
+    this.$refs.txt_comment.focus();
   }
 });
 
@@ -20010,6 +20052,7 @@ var render = function() {
                         expression: "message"
                       }
                     ],
+                    ref: "txt_comment",
                     staticClass: "input",
                     attrs: { placeholder: "Add a comment...", required: "" },
                     domProps: { value: _vm.message },
@@ -20153,6 +20196,8 @@ var render = function() {
                                   expression: "message"
                                 }
                               ],
+                              ref: "txt_comment" + index,
+                              refInFor: true,
                               staticClass: "input",
                               attrs: {
                                 placeholder: "Add a comment...",
@@ -20172,14 +20217,9 @@ var render = function() {
                           _vm._v(" "),
                           _c("div", { staticClass: "form-row" }, [
                             _vm.error_reply
-                              ? _c(
-                                  "span",
-                                  {
-                                    staticClass: "input",
-                                    staticStyle: { color: "red" }
-                                  },
-                                  [_vm._v(_vm._s(_vm.error_reply))]
-                                )
+                              ? _c("span", { staticStyle: { color: "red" } }, [
+                                  _vm._v(_vm._s(_vm.error_reply))
+                                ])
                               : _vm._e()
                           ]),
                           _vm._v(" "),
@@ -20219,14 +20259,9 @@ var render = function() {
                           _vm._v(" "),
                           _c("div", { staticClass: "form-row" }, [
                             _vm.error_replier
-                              ? _c(
-                                  "span",
-                                  {
-                                    staticClass: "input",
-                                    staticStyle: { color: "red" }
-                                  },
-                                  [_vm._v(_vm._s(_vm.error_replier))]
-                                )
+                              ? _c("span", { staticStyle: { color: "red" } }, [
+                                  _vm._v(_vm._s(_vm.error_replier))
+                                ])
                               : _vm._e()
                           ])
                         ]
@@ -20325,6 +20360,8 @@ var render = function() {
                                                 expression: "message"
                                               }
                                             ],
+                                            ref: "txt_reply" + index2,
+                                            refInFor: true,
                                             staticClass: "input",
                                             attrs: {
                                               placeholder: "Add a comment...",
@@ -20348,7 +20385,6 @@ var render = function() {
                                             ? _c(
                                                 "span",
                                                 {
-                                                  staticClass: "input",
                                                   staticStyle: { color: "red" }
                                                 },
                                                 [
@@ -20411,7 +20447,6 @@ var render = function() {
                                             ? _c(
                                                 "span",
                                                 {
-                                                  staticClass: "input",
                                                   staticStyle: { color: "red" }
                                                 },
                                                 [
