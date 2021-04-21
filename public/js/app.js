@@ -1899,15 +1899,24 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Comment.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/Comment.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Comments.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/Comments.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2073,8 +2082,7 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
       reply_comment_boxes: [],
       message: null,
       user_name: null,
-      view_comment: [],
-      show: [],
+      has_open: false,
       error_comment: null,
       error_commenter: null,
       error_reply: null,
@@ -2094,16 +2102,9 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
         _this.comments = res.data;
 
         _this.sortComments();
+
+        _this.countComments();
       });
-    },
-    showComments: function showComments(index) {
-      if (!this.view_comment[index]) {
-        Vue.set(this.show, index, "hide");
-        Vue.set(this.view_comment, index, 1);
-      } else {
-        Vue.set(this.show, index, "view");
-        Vue.set(this.view_comment, index, 0);
-      }
     },
     sortComments: function sortComments() {
       this.comments = _.orderBy(this.comments, ['created_at'], ['desc']);
@@ -2114,15 +2115,50 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
         });
       });
     },
+    countComments: function countComments() {
+      this.count = this.comments.length;
+      var replies = 0;
+      this.comments.forEach(function (comment) {
+        replies += comment.replies.length;
+        comment.replies.forEach(function (reply) {
+          replies += reply.replies.length;
+        });
+      });
+      this.count += replies;
+    },
     openComment: function openComment(index) {
       if (this.comment_boxes[index]) {
         Vue.set(this.comment_boxes, index, 0);
+        this.has_open = false;
       } else {
+        for (var i = 0; i < this.comment_boxes.length; i++) {
+          if (this.comment_boxes[i]) Vue.set(this.comment_boxes, i, 0);
+        }
+
+        for (var _i = 0; _i < this.reply_comment_boxes.length; _i++) {
+          if (this.reply_comment_boxes[_i]) Vue.set(this.reply_comment_boxes, _i, 0);
+        }
+
         Vue.set(this.comment_boxes, index, 1);
+        this.has_open = true;
       }
     },
     openReply: function openReply(index) {
-      if (this.reply_comment_boxes[index]) Vue.set(this.reply_comment_boxes, index, 0);else Vue.set(this.reply_comment_boxes, index, 1);
+      if (this.reply_comment_boxes[index]) {
+        Vue.set(this.reply_comment_boxes, index, 0);
+        this.has_open = false;
+      } else {
+        for (var i = 0; i < this.comment_boxes.length; i++) {
+          if (this.comment_boxes[i]) Vue.set(this.comment_boxes, i, 0);
+        }
+
+        for (var _i2 = 0; _i2 < this.reply_comment_boxes.length; _i2++) {
+          if (this.reply_comment_boxes[_i2]) Vue.set(this.reply_comment_boxes, _i2, 0);
+        }
+
+        Vue.set(this.reply_comment_boxes, index, 1);
+        this.has_open = true;
+      }
     },
     saveComment: function saveComment() {
       var _this2 = this;
@@ -2150,8 +2186,11 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
             _this2.sortComments();
 
+            _this2.countComments();
+
             _this2.message = null;
             _this2.user_name = null;
+            _this2.has_open = false;
           }
         });
       } else {
@@ -2196,10 +2235,14 @@ var _ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
             }
 
             Vue.set(_this3.comment_boxes, index, 0);
-            _this3.message = null;
-            _this3.user_name = null;
 
             _this3.sortComments();
+
+            _this3.countComments();
+
+            _this3.message = null;
+            _this3.user_name = null;
+            _this3.has_open = false;
           }
         });
       } else {
@@ -19897,10 +19940,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Comment.vue?vue&type=template&id=82b07a10&":
-/*!*****************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/Comment.vue?vue&type=template&id=82b07a10& ***!
-  \*****************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Comments.vue?vue&type=template&id=19fc3d2b&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/js/components/Comments.vue?vue&type=template&id=19fc3d2b& ***!
+  \******************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -19916,98 +19959,102 @@ var render = function() {
     "div",
     { staticClass: "comments-app" },
     [
-      _c("h1", [_vm._v("Comments")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "comment-form" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "form",
-          {
-            staticClass: "form",
-            attrs: { name: "form" },
-            on: {
-              submit: function($event) {
-                $event.preventDefault()
-                return _vm.saveComment($event)
-              }
-            }
-          },
-          [
-            _c("div", { staticClass: "form-row" }, [
-              _c("textarea", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.message,
-                    expression: "message"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { placeholder: "Add comment...", required: "" },
-                domProps: { value: _vm.message },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.message = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _vm.error_comment
-                ? _c(
-                    "span",
-                    { staticClass: "input", staticStyle: { color: "red" } },
-                    [_vm._v(_vm._s(_vm.error_comment))]
-                  )
-                : _vm._e()
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-row" }, [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.user_name,
-                    expression: "user_name"
-                  }
-                ],
-                staticClass: "input",
-                attrs: { placeholder: "Your name", type: "text" },
-                domProps: { value: _vm.user_name },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.user_name = $event.target.value
-                  }
-                }
-              }),
-              _vm._v(" "),
-              _vm.error_commenter
-                ? _c(
-                    "span",
-                    { staticClass: "input", staticStyle: { color: "red" } },
-                    [_vm._v(_vm._s(_vm.error_commenter))]
-                  )
-                : _vm._e()
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "form-row" }, [
-              _c("input", {
-                staticClass: "btn btn-success",
-                attrs: { type: "button", value: "Add Comment" },
-                on: { click: _vm.saveComment }
-              })
-            ])
-          ]
+      _c("span", { staticClass: "comment-count" }, [
+        _vm._v(
+          _vm._s(this.count) + " Comment" + _vm._s(this.count > 1 ? "s" : "")
         )
       ]),
+      _vm._v(" "),
+      !_vm.has_open
+        ? _c("div", { staticClass: "comment-form" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                staticClass: "form",
+                attrs: { name: "form" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    return _vm.saveComment($event)
+                  }
+                }
+              },
+              [
+                _c("div", { staticClass: "form-row" }, [
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.message,
+                        expression: "message"
+                      }
+                    ],
+                    staticClass: "input",
+                    attrs: { placeholder: "Add a comment...", required: "" },
+                    domProps: { value: _vm.message },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.message = $event.target.value
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-row" }, [
+                  _vm.error_comment
+                    ? _c("span", { staticStyle: { color: "red" } }, [
+                        _vm._v(_vm._s(_vm.error_comment))
+                      ])
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-row" }, [
+                  _c("input", {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button", value: "Post as" },
+                    on: { click: _vm.saveComment }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.user_name,
+                        expression: "user_name"
+                      }
+                    ],
+                    staticClass: "input name",
+                    attrs: { placeholder: "Your name", type: "text" },
+                    domProps: { value: _vm.user_name },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.user_name = $event.target.value
+                      }
+                    }
+                  })
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "form-row" }, [
+                  _vm.error_commenter
+                    ? _c("span", { staticStyle: { color: "red" } }, [
+                        _vm._v(_vm._s(_vm.error_commenter))
+                      ])
+                    : _vm._e()
+                ])
+              ]
+            )
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _vm._l(_vm.comments, function(comment, index) {
         return _vm.comments
@@ -20016,21 +20063,25 @@ var render = function() {
                 _vm._m(1, true),
                 _vm._v(" "),
                 _c("div", { staticClass: "comment-box" }, [
+                  _c("div", { staticClass: "comment-info" }, [
+                    _c("span", { staticClass: "comment-author" }, [
+                      _vm._v(
+                        "\n                        " +
+                          _vm._s(comment.user_name) +
+                          "\n                    "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("span", { staticClass: "comment-date" }, [
+                      _vm._v(_vm._s(comment.date))
+                    ])
+                  ]),
+                  _vm._v(" "),
                   _c("div", { staticClass: "comment-text" }, [
                     _vm._v(_vm._s(comment.comment))
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "comment-footer" }, [
-                    _c("div", { staticClass: "comment-info" }, [
-                      _c("span", { staticClass: "comment-author" }, [
-                        _c("em", [_vm._v(_vm._s(comment.user_name))])
-                      ]),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "comment-date" }, [
-                        _vm._v(_vm._s(comment.date))
-                      ])
-                    ]),
-                    _vm._v(" "),
                     _c("div", { staticClass: "comment-actions" }, [
                       _c("ul", { staticClass: "list" }, [
                         _c("li", [
@@ -20043,14 +20094,19 @@ var render = function() {
                                 }
                               }
                             },
-                            [_vm._v("Reply")]
+                            [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.comment_boxes[index] ? "Cancel" : "Reply"
+                                )
+                              )
+                            ]
                           )
                         ])
                       ])
                     ])
                   ])
                 ]),
-                _vm._v("=\n            "),
                 _vm._v(" "),
                 _vm.comment_boxes[index]
                   ? _c("div", { staticClass: "comment-form comment-v" }, [
@@ -20081,7 +20137,7 @@ var render = function() {
                               ],
                               staticClass: "input",
                               attrs: {
-                                placeholder: "Add comment...",
+                                placeholder: "Add a comment...",
                                 required: ""
                               },
                               domProps: { value: _vm.message },
@@ -20093,8 +20149,10 @@ var render = function() {
                                   _vm.message = $event.target.value
                                 }
                               }
-                            }),
-                            _vm._v(" "),
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "form-row" }, [
                             _vm.error_reply
                               ? _c(
                                   "span",
@@ -20108,6 +20166,16 @@ var render = function() {
                           ]),
                           _vm._v(" "),
                           _c("div", { staticClass: "form-row" }, [
+                            _c("input", {
+                              staticClass: "btn btn-primary",
+                              attrs: { type: "button", value: "Post as" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.saveReply(comment.id, index, 0, 1)
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
                             _c("input", {
                               directives: [
                                 {
@@ -20128,8 +20196,10 @@ var render = function() {
                                   _vm.user_name = $event.target.value
                                 }
                               }
-                            }),
-                            _vm._v(" "),
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "form-row" }, [
                             _vm.error_replier
                               ? _c(
                                   "span",
@@ -20140,18 +20210,6 @@ var render = function() {
                                   [_vm._v(_vm._s(_vm.error_replier))]
                                 )
                               : _vm._e()
-                          ]),
-                          _vm._v(" "),
-                          _c("div", { staticClass: "form-row" }, [
-                            _c("input", {
-                              staticClass: "btn btn-success",
-                              attrs: { type: "button", value: "Add Comment" },
-                              on: {
-                                click: function($event) {
-                                  return _vm.saveReply(comment.id, index, 0, 1)
-                                }
-                              }
-                            })
                           ])
                         ]
                       )
@@ -20166,67 +20224,53 @@ var render = function() {
                           _c("div", { staticClass: "comment reply" }, [
                             _vm._m(3, true),
                             _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "comment-box",
-                                staticStyle: { background: "grey" }
-                              },
-                              [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass: "comment-text",
-                                    staticStyle: { color: "white" }
-                                  },
-                                  [_vm._v(_vm._s(reply.comment))]
-                                ),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "comment-footer" }, [
-                                  _c("div", { staticClass: "comment-info" }, [
-                                    _c(
-                                      "span",
-                                      { staticClass: "comment-author" },
-                                      [
-                                        _vm._v(
-                                          "\n                                       " +
-                                            _vm._s(reply.user_name) +
-                                            "\n                                    "
-                                        )
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "span",
-                                      { staticClass: "comment-date" },
-                                      [_vm._v(_vm._s(reply.date))]
-                                    )
-                                  ]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    { staticClass: "comment-actions" },
-                                    [
-                                      _c("ul", { staticClass: "list" }, [
-                                        _c("li", [
-                                          _c(
-                                            "a",
-                                            {
-                                              on: {
-                                                click: function($event) {
-                                                  return _vm.openReply(index2)
-                                                }
-                                              }
-                                            },
-                                            [_vm._v("Reply")]
-                                          )
-                                        ])
-                                      ])
-                                    ]
+                            _c("div", { staticClass: "comment-box" }, [
+                              _c("div", { staticClass: "comment-info" }, [
+                                _c("span", { staticClass: "comment-author" }, [
+                                  _vm._v(
+                                    "\n                                    " +
+                                      _vm._s(reply.user_name) +
+                                      "\n                                "
                                   )
+                                ]),
+                                _vm._v(" "),
+                                _c("span", { staticClass: "comment-date" }, [
+                                  _vm._v(_vm._s(reply.date))
                                 ])
-                              ]
-                            ),
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "comment-text" }, [
+                                _vm._v(_vm._s(reply.comment))
+                              ]),
+                              _vm._v(" "),
+                              _c("div", { staticClass: "comment-footer" }, [
+                                _c("div", { staticClass: "comment-actions" }, [
+                                  _c("ul", { staticClass: "list" }, [
+                                    _c("li", [
+                                      _c(
+                                        "a",
+                                        {
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.openReply(index2)
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.reply_comment_boxes[index2]
+                                                ? "Cancel"
+                                                : "Reply"
+                                            )
+                                          )
+                                        ]
+                                      )
+                                    ])
+                                  ])
+                                ])
+                              ])
+                            ]),
                             _vm._v(" "),
                             _vm.reply_comment_boxes[index2]
                               ? _c(
@@ -20265,7 +20309,7 @@ var render = function() {
                                             ],
                                             staticClass: "input",
                                             attrs: {
-                                              placeholder: "Add comment...",
+                                              placeholder: "Add a comment...",
                                               required: ""
                                             },
                                             domProps: { value: _vm.message },
@@ -20282,6 +20326,41 @@ var render = function() {
                                         ]),
                                         _vm._v(" "),
                                         _c("div", { staticClass: "form-row" }, [
+                                          _vm.error_reply
+                                            ? _c(
+                                                "span",
+                                                {
+                                                  staticClass: "input",
+                                                  staticStyle: { color: "red" }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    _vm._s(_vm.error_reply)
+                                                  )
+                                                ]
+                                              )
+                                            : _vm._e()
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("div", { staticClass: "form-row" }, [
+                                          _c("input", {
+                                            staticClass: "btn btn-primary",
+                                            attrs: {
+                                              type: "button",
+                                              value: "Post as"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.saveReply(
+                                                  reply.id,
+                                                  index,
+                                                  index2,
+                                                  2
+                                                )
+                                              }
+                                            }
+                                          }),
+                                          _vm._v(" "),
                                           _c("input", {
                                             directives: [
                                               {
@@ -20306,23 +20385,10 @@ var render = function() {
                                                   $event.target.value
                                               }
                                             }
-                                          }),
-                                          _vm._v(" "),
-                                          _vm.error_reply
-                                            ? _c(
-                                                "span",
-                                                {
-                                                  staticClass: "input",
-                                                  staticStyle: { color: "red" }
-                                                },
-                                                [
-                                                  _vm._v(
-                                                    _vm._s(_vm.error_reply)
-                                                  )
-                                                ]
-                                              )
-                                            : _vm._e(),
-                                          _vm._v(" "),
+                                          })
+                                        ]),
+                                        _vm._v(" "),
+                                        _c("div", { staticClass: "form-row" }, [
                                           _vm.error_replier
                                             ? _c(
                                                 "span",
@@ -20337,26 +20403,6 @@ var render = function() {
                                                 ]
                                               )
                                             : _vm._e()
-                                        ]),
-                                        _vm._v(" "),
-                                        _c("div", { staticClass: "form-row" }, [
-                                          _c("input", {
-                                            staticClass: "btn btn-success",
-                                            attrs: {
-                                              type: "button",
-                                              value: "Add Comment"
-                                            },
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.saveReply(
-                                                  reply.id,
-                                                  index,
-                                                  index2,
-                                                  2
-                                                )
-                                              }
-                                            }
-                                          })
                                         ])
                                       ]
                                     )
@@ -20383,20 +20429,50 @@ var render = function() {
                                             _vm._v(" "),
                                             _c(
                                               "div",
-                                              {
-                                                staticClass: "comment-box",
-                                                staticStyle: {
-                                                  background: "grey"
-                                                }
-                                              },
+                                              { staticClass: "comment-box" },
                                               [
                                                 _c(
                                                   "div",
                                                   {
-                                                    staticClass: "comment-text",
-                                                    staticStyle: {
-                                                      color: "white"
-                                                    }
+                                                    staticClass: "comment-info"
+                                                  },
+                                                  [
+                                                    _c(
+                                                      "span",
+                                                      {
+                                                        staticClass:
+                                                          "comment-author"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "\n                                            " +
+                                                            _vm._s(
+                                                              reply2.user_name
+                                                            ) +
+                                                            "\n                                            "
+                                                        )
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "span",
+                                                      {
+                                                        staticClass:
+                                                          "comment-date"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          _vm._s(reply2.date)
+                                                        )
+                                                      ]
+                                                    )
+                                                  ]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "div",
+                                                  {
+                                                    staticClass: "comment-text"
                                                   },
                                                   [
                                                     _vm._v(
@@ -20405,55 +20481,7 @@ var render = function() {
                                                   ]
                                                 ),
                                                 _vm._v(" "),
-                                                _c(
-                                                  "div",
-                                                  {
-                                                    staticClass:
-                                                      "comment-footer"
-                                                  },
-                                                  [
-                                                    _c(
-                                                      "div",
-                                                      {
-                                                        staticClass:
-                                                          "comment-info"
-                                                      },
-                                                      [
-                                                        _c(
-                                                          "span",
-                                                          {
-                                                            staticClass:
-                                                              "comment-author"
-                                                          },
-                                                          [
-                                                            _vm._v(
-                                                              "\n                                                " +
-                                                                _vm._s(
-                                                                  reply2.user_name
-                                                                ) +
-                                                                "\n                                                "
-                                                            )
-                                                          ]
-                                                        ),
-                                                        _vm._v(" "),
-                                                        _c(
-                                                          "span",
-                                                          {
-                                                            staticClass:
-                                                              "comment-date"
-                                                          },
-                                                          [
-                                                            _vm._v(
-                                                              _vm._s(
-                                                                reply2.date
-                                                              )
-                                                            )
-                                                          ]
-                                                        )
-                                                      ]
-                                                    )
-                                                  ]
-                                                )
+                                                _vm._m(6, true)
                                               ]
                                             )
                                           ]
@@ -20525,6 +20553,14 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "comment-avatar" }, [
       _c("img", { attrs: { src: "images/user.png" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "comment-footer" }, [
+      _c("div", { staticClass: "comment-actions" }, [_c("br")])
     ])
   }
 ]
@@ -34189,14 +34225,14 @@ module.exports = function(module) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_resource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-resource */ "./node_modules/vue-resource/dist/vue-resource.esm.js");
-/* harmony import */ var _components_Comment_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/Comment.vue */ "./resources/assets/js/components/Comment.vue");
+/* harmony import */ var _components_Comments_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/Comments.vue */ "./resources/assets/js/components/Comments.vue");
 __webpack_require__(/*! ./bootstrap */ "./resources/assets/js/bootstrap.js");
 
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
 Vue.use(vue_resource__WEBPACK_IMPORTED_MODULE_0__["default"]);
 
-Vue.component('comment', _components_Comment_vue__WEBPACK_IMPORTED_MODULE_1__["default"]);
+Vue.component('comments', _components_Comments_vue__WEBPACK_IMPORTED_MODULE_2__["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -34235,17 +34271,17 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
-/***/ "./resources/assets/js/components/Comment.vue":
-/*!****************************************************!*\
-  !*** ./resources/assets/js/components/Comment.vue ***!
-  \****************************************************/
+/***/ "./resources/assets/js/components/Comments.vue":
+/*!*****************************************************!*\
+  !*** ./resources/assets/js/components/Comments.vue ***!
+  \*****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Comment_vue_vue_type_template_id_82b07a10___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Comment.vue?vue&type=template&id=82b07a10& */ "./resources/assets/js/components/Comment.vue?vue&type=template&id=82b07a10&");
-/* harmony import */ var _Comment_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Comment.vue?vue&type=script&lang=js& */ "./resources/assets/js/components/Comment.vue?vue&type=script&lang=js&");
+/* harmony import */ var _Comments_vue_vue_type_template_id_19fc3d2b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Comments.vue?vue&type=template&id=19fc3d2b& */ "./resources/assets/js/components/Comments.vue?vue&type=template&id=19fc3d2b&");
+/* harmony import */ var _Comments_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Comments.vue?vue&type=script&lang=js& */ "./resources/assets/js/components/Comments.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -34255,9 +34291,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _Comment_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _Comment_vue_vue_type_template_id_82b07a10___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _Comment_vue_vue_type_template_id_82b07a10___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _Comments_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _Comments_vue_vue_type_template_id_19fc3d2b___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _Comments_vue_vue_type_template_id_19fc3d2b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -34267,38 +34303,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/assets/js/components/Comment.vue"
+component.options.__file = "resources/assets/js/components/Comments.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/assets/js/components/Comment.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************!*\
-  !*** ./resources/assets/js/components/Comment.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************/
+/***/ "./resources/assets/js/components/Comments.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/assets/js/components/Comments.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Comment_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Comment.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Comment.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Comment_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Comments_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./Comments.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Comments.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Comments_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/assets/js/components/Comment.vue?vue&type=template&id=82b07a10&":
-/*!***********************************************************************************!*\
-  !*** ./resources/assets/js/components/Comment.vue?vue&type=template&id=82b07a10& ***!
-  \***********************************************************************************/
+/***/ "./resources/assets/js/components/Comments.vue?vue&type=template&id=19fc3d2b&":
+/*!************************************************************************************!*\
+  !*** ./resources/assets/js/components/Comments.vue?vue&type=template&id=19fc3d2b& ***!
+  \************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Comment_vue_vue_type_template_id_82b07a10___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Comment.vue?vue&type=template&id=82b07a10& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Comment.vue?vue&type=template&id=82b07a10&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Comment_vue_vue_type_template_id_82b07a10___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Comments_vue_vue_type_template_id_19fc3d2b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./Comments.vue?vue&type=template&id=19fc3d2b& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/js/components/Comments.vue?vue&type=template&id=19fc3d2b&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Comments_vue_vue_type_template_id_19fc3d2b___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Comment_vue_vue_type_template_id_82b07a10___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Comments_vue_vue_type_template_id_19fc3d2b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

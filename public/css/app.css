@@ -8241,3 +8241,37 @@ button.close {
   }
 }
 
+.navbar-default {
+  background-color: #3c8dbc;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25) !important;
+}
+
+.navbar-brand {
+  color: #FFF !important;
+}
+
+#app > .container {
+  border: 1px solid #CCC;
+  background: #FFF;
+  padding: 40px;
+}
+
+.post-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #0091d9;
+}
+
+.post-subtitle {
+  padding: 15px;
+}
+
+.post-content {
+  text-align: justify;
+}
+
+.comment-count {
+  font-weight: bold;
+  color: #2a2e2e !important;
+}
+

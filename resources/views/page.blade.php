@@ -4,20 +4,19 @@
     <link href="css/comment.css" rel="stylesheet" type="text/css">
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Example Page {{ $page_id }}</div>
-
-                    <div class="panel-body">
-                        This is an example page
-                        
+            <div class="col-md-12">
+                <span class="post-subtitle">Sample Post: {{ $page_id }}</span>
+                <div class="panel">
+                    <div class="panel-heading post-title">Aloware is awesome!!!</div>
+                    <div class="panel-body post-content">
+                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12" style="background:white;">
-                <comment comment-url="{{ $page_id }}"></comment>
+                <comments comment-url="{{ $page_id }}"></comments>
             </div>      
         </div>
     </div>

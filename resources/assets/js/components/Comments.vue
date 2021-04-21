@@ -1,8 +1,8 @@
 <template>
     <div class="comments-app">
-        <h1>Comments</h1>
+        <span class="comment-count">{{ this.count }} Comment{{ this.count > 1 ? 's' : '' }}</span>
         <!-- Form -->
-        <div class="comment-form">
+        <div class="comment-form" v-if="!has_open">
             <!-- Comment Avatar -->
             <div class="comment-avatar">
                 <img src="images/user.png">
@@ -10,15 +10,17 @@
 
             <form class="form" name="form" @submit.prevent="saveComment">
                 <div class="form-row">
-                    <textarea class="input" placeholder="Add comment..." required v-model="message"></textarea>
-                    <span class="input" v-if="error_comment" style="color: red;">{{ error_comment }}</span>
+                    <textarea class="input" placeholder="Add a comment..." required v-model="message"></textarea>
                 </div>
                 <div class="form-row">
-                    <input class="input" placeholder="Your name" type="text" v-model="user_name">
-                    <span class="input" v-if="error_commenter" style="color: red;">{{ error_commenter }}</span>
+                    <span v-if="error_comment" style="color: red;">{{ error_comment }}</span>
                 </div>
                 <div class="form-row">
-                    <input type="button" class="btn btn-success" @click="saveComment" value="Add Comment">
+                    <input type="button" class="btn btn-primary" @click="saveComment" value="Post as">
+                    <input class="input name" placeholder="Your name" type="text" v-model="user_name">
+                </div>
+                <div class="form-row">
+                    <span v-if="error_commenter" style="color: red;">{{ error_commenter }}</span>
                 </div>
             </form>
         </div>
@@ -32,23 +34,23 @@
                 </div>
                 <!-- Comment Box -->
                 <div class="comment-box">
+                    <div class="comment-info">
+                        <span class="comment-author">
+                            {{ comment.user_name }}
+                        </span>
+                        <span class="comment-date">{{ comment.date}}</span>
+                    </div>
                     <div class="comment-text">{{ comment.comment }}</div>
                     <div class="comment-footer">
-                        <div class="comment-info">
-                            <span class="comment-author">
-                               <em>{{ comment.user_name }}</em>
-                            </span>
-                            <span class="comment-date">{{ comment.date}}</span>
-                        </div>
                         <div class="comment-actions">
                             <ul class="list">
                                 <li>
-                                    <a v-on:click="openComment(index)">Reply</a>
+                                    <a v-on:click="openComment(index)">{{ comment_boxes[index] ? 'Cancel' : 'Reply' }}</a>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                </div>=
+                </div>
                 <!-- From -->
                 <div class="comment-form comment-v" v-if="comment_boxes[index]">
                     <!-- Comment Avatar -->
@@ -57,15 +59,17 @@
                     </div>
                     <form class="form" name="form" v-on:submit.prevent="saveReply(comment.id, index, 0, 1)">
                         <div class="form-row">
-                            <textarea class="input" placeholder="Add comment..." required v-model="message"></textarea>
+                            <textarea class="input" placeholder="Add a comment..." required v-model="message"></textarea>
+                        </div>
+                        <div class="form-row">
                             <span class="input" v-if="error_reply" style="color: red;">{{ error_reply }}</span>
                         </div>
                         <div class="form-row">
+                            <input type="button" class="btn btn-primary" v-on:click="saveReply(comment.id, index, 0, 1)" value="Post as">
                             <input class="input" placeholder="Your name" type="text" v-model="user_name">
-                            <span class="input" v-if="error_replier" style="color: red;">{{ error_replier }}</span>
                         </div>
                         <div class="form-row">
-                            <input type="button" class="btn btn-success" v-on:click="saveReply(comment.id, index, 0, 1)" value="Add Comment">
+                            <span class="input" v-if="error_replier" style="color: red;">{{ error_replier }}</span>
                         </div>
                     </form>
                 </div>
@@ -78,19 +82,19 @@
                                 <img src="images/user.png">
                             </div>
                             <!-- Comment Box -->
-                            <div class="comment-box" style="background: grey;">
-                                <div class="comment-text" style="color: white">{{ reply.comment }}</div>
+                            <div class="comment-box">
+                                <div class="comment-info">
+                                    <span class="comment-author">
+                                        {{ reply.user_name }}
+                                    </span>
+                                    <span class="comment-date">{{ reply.date }}</span>
+                                </div>
+                                <div class="comment-text">{{ reply.comment }}</div>
                                 <div class="comment-footer">
-                                    <div class="comment-info">
-                                        <span class="comment-author">
-                                           {{ reply.user_name }}
-                                        </span>
-                                        <span class="comment-date">{{ reply.date }}</span>
-                                    </div>
                                     <div class="comment-actions">
                                         <ul class="list">
                                             <li>
-                                                <a v-on:click="openReply(index2)">Reply</a>
+                                                <a v-on:click="openReply(index2)">{{ reply_comment_boxes[index2] ? 'Cancel' : 'Reply' }}</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -104,15 +108,17 @@
                                 </div>
                                 <form class="form" name="form" v-on:submit.prevent="saveReply(reply.id, index, index2, 2)">
                                     <div class="form-row">
-                                        <textarea class="input" placeholder="Add comment..." required v-model="message"></textarea>
+                                        <textarea class="input" placeholder="Add a comment..." required v-model="message"></textarea>
                                     </div>
                                     <div class="form-row">
-                                        <input class="input" placeholder="Your name" type="text" v-model="user_name">
                                         <span class="input" v-if="error_reply" style="color: red;">{{ error_reply }}</span>
-                                        <span class="input" v-if="error_replier" style="color: red;">{{ error_replier }}</span>
                                     </div>
                                     <div class="form-row">
-                                        <input type="button" class="btn btn-success" v-on:click="saveReply(reply.id, index, index2, 2)" value="Add Comment">
+                                        <input type="button" class="btn btn-primary" v-on:click="saveReply(reply.id, index, index2, 2)" value="Post as">
+                                        <input class="input" placeholder="Your name" type="text" v-model="user_name">
+                                    </div>
+                                    <div class="form-row">
+                                        <span class="input" v-if="error_replier" style="color: red;">{{ error_replier }}</span>
                                     </div>
                                 </form>
                             </div>
@@ -126,14 +132,17 @@
                                             <img src="images/user.png">
                                         </div>
                                         <!-- Comment Box -->
-                                        <div class="comment-box" style="background: grey;">
-                                            <div class="comment-text" style="color: white">{{ reply2.comment }}</div>
+                                        <div class="comment-box">
+                                            <div class="comment-info">
+                                                <span class="comment-author">
+                                                {{ reply2.user_name }}
+                                                </span>
+                                                <span class="comment-date">{{ reply2.date }}</span>
+                                            </div>
+                                            <div class="comment-text">{{ reply2.comment }}</div>
                                             <div class="comment-footer">
-                                                <div class="comment-info">
-                                                    <span class="comment-author">
-                                                    {{ reply2.user_name }}
-                                                    </span>
-                                                    <span class="comment-date">{{ reply2.date }}</span>
+                                                <div class="comment-actions">
+                                                    <br/>
                                                 </div>
                                             </div>
                                         </div>
@@ -163,8 +172,7 @@
                 reply_comment_boxes: [],
                 message: null,
                 user_name: null,
-                view_comment: [],
-                show: [],
+                has_open: false,
                 error_comment: null,
                 error_commenter: null,
                 error_reply: null,
@@ -183,16 +191,8 @@
                 this.$http.get('comments/' + this.commentUrl).then(res => {
                     this.comments = res.data;
                     this.sortComments();
+                    this.countComments();
                 });
-            },
-            showComments(index) {
-                if (!this.view_comment[index]) {
-                    Vue.set(this.show, index, "hide");
-                    Vue.set(this.view_comment, index, 1);
-                } else {
-                    Vue.set(this.show, index, "view");
-                    Vue.set(this.view_comment, index, 0);
-                }
             },
             sortComments() {
                 this.comments = _.orderBy(this.comments, ['created_at'], ['desc']);
@@ -205,18 +205,59 @@
                     });
                 });
             },
+            countComments() {
+                this.count = this.comments.length;
+
+                let replies = 0;
+                this.comments.forEach(function (comment) {
+                    replies += comment.replies.length;
+
+                   comment.replies.forEach(function (reply) {
+                        replies += reply.replies.length;
+                    }); 
+                });
+
+                this.count += replies;
+            },
             openComment(index) {
                 if (this.comment_boxes[index]) {
                     Vue.set(this.comment_boxes, index, 0);
+
+                    this.has_open = false;
                 } else {
+                    for (let i = 0; i < this.comment_boxes.length; i++) {
+                        if (this.comment_boxes[i])     
+                            Vue.set(this.comment_boxes, i, 0);
+                    }
+                    for (let i = 0; i < this.reply_comment_boxes.length; i++) {
+                        if (this.reply_comment_boxes[i])     
+                            Vue.set(this.reply_comment_boxes, i, 0);
+                    }
+
                     Vue.set(this.comment_boxes, index, 1);
+
+                    this.has_open = true;
                 }
             },
             openReply(index) {
-                if (this.reply_comment_boxes[index])
+                if (this.reply_comment_boxes[index]) {
                     Vue.set(this.reply_comment_boxes, index, 0);
-                else
+
+                    this.has_open = false;
+                } else {
+                    for (let i = 0; i < this.comment_boxes.length; i++) {
+                        if (this.comment_boxes[i])     
+                            Vue.set(this.comment_boxes, i, 0);
+                    }
+                    for (let i = 0; i < this.reply_comment_boxes.length; i++) {
+                        if (this.reply_comment_boxes[i])     
+                            Vue.set(this.reply_comment_boxes, i, 0);
+                    }
+
                     Vue.set(this.reply_comment_boxes, index, 1);
+
+                    this.has_open = true;
+                }
             },
             saveComment() {
                 this.error_comment = null;
@@ -240,8 +281,10 @@
                                 "date": res.data.comment.date
                             });
                             this.sortComments();
+                            this.countComments();
                             this.message = null;
                             this.user_name = null;
+                            this.has_open = false;
                         }
                     });
                 }
@@ -284,9 +327,11 @@
                                 Vue.set(this.reply_comment_boxes, index2, 0);
                             }
                             Vue.set(this.comment_boxes, index, 0);
+                            this.sortComments();
+                            this.countComments();
                             this.message = null;
                             this.user_name = null;
-                            this.sortComments();
+                            this.has_open = false;
                         }
                     });
                 }

@@ -5,9 +5,9 @@ import VueResource from "vue-resource";
 window.Vue = require('vue');
 Vue.use(VueResource);
 
-import CommentComponent from './components/Comment.vue';
+import CommentsComponent from './components/Comments.vue';
 
-Vue.component('comment', CommentComponent);
+Vue.component('comments', CommentsComponent);
 const app = new Vue({
     el: '#app'
 });
